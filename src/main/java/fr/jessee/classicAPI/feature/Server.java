@@ -1,12 +1,8 @@
 package fr.jessee.classicAPI.feature;
 
-import com.password4j.Hash;
-import com.password4j.Password;
 import fr.jessee.classicAPI.ClassicAPI;
 import fr.jessee.classicAPI.util.JsonWebToken;
 import fr.jessee.classicAPI.database.Connection;
-import fr.jessee.classicAPI.database.Credentials;
-import fr.jessee.classicAPI.util.Tokens;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.UnauthorizedResponse;
@@ -16,10 +12,7 @@ import net.luckperms.api.node.types.PermissionNode;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.sql.*;
