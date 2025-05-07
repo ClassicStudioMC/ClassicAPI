@@ -6,9 +6,13 @@ import fr.jessee.classicAPI.database.Connection;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.UnauthorizedResponse;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.Node;
 import net.luckperms.api.node.types.PermissionNode;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
@@ -69,9 +73,9 @@ public class Server {
                 return;
             }
 
-
             // Récupération du joueur
             User user = classicAPI.getLuckPerms().getUserManager().loadUser(UUID.fromString(uuid)).join();
+            Player p = Bukkit.getPlayer(UUID.fromString(uuid));
 
             // Création du node temporaire
             PermissionNode node = (PermissionNode) Node.builder(permission)
@@ -80,6 +84,18 @@ public class Server {
 
             // Ajoute la permission temporaire
             user.data().add(node);
+
+            if (p != null) {
+                Bukkit.broadcast(
+                        Component.text()
+                                .append(Component.text("⭑ ", NamedTextColor.GOLD))
+                                .append(Component.text(p.getName(), NamedTextColor.GOLD))
+                                .append(Component.text(" est désormais ", NamedTextColor.GRAY))
+                                .append(Component.text("Premium", NamedTextColor.GOLD))
+                                .append(Component.text(" !", NamedTextColor.GRAY))
+                                .build()
+                );
+            }
 
             // Sauvegarde
             classicAPI.getLuckPerms().getUserManager().saveUser(user);
