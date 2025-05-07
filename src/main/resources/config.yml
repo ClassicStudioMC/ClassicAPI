@@ -11,4 +11,4 @@ server:
   keyStoreName: ""
 
 jwt:
-  secret: "7yT+gP4b0EIOhkxK1BqdqCzG+XKZ3XyXz2X1EIz2v+E="
+  secret: ""
