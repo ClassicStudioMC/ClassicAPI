@@ -1,0 +1,8 @@
+name: ClassicAPI
+version: '1.0-SNAPSHOT'
+main: fr.jessee.classicAPI.ClassicAPI
+api-version: '1.21'
+authors: [ Jessee_Dantonio ]
+
+depend:
+  - LuckPerms

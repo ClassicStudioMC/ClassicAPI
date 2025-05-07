@@ -1,0 +1,96 @@
+plugins {
+    id 'java'
+}
+
+group = 'fr.jessee'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "papermc-repo"
+        url = "https://repo.papermc.io/repository/maven-public/"
+    }
+    maven {
+        name = "sonatype"
+        url = "https://oss.sonatype.org/content/groups/public/"
+    }
+}
+
+
+ext {
+    jacksonVersion = '2.19.0' // Choisis une version stable
+}
+
+dependencies {
+    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+    compileOnly("net.luckperms:api:5.4")
+
+    implementation 'com.esotericsoftware.yamlbeans:yamlbeans:1.17'
+
+    // Password4j
+    implementation 'com.password4j:password4j:1.8.2'
+
+    // JJWT (JSON Web Token)
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6' // ou jjwt-gson si tu préfères Gson
+
+    // dotenv-java
+    implementation 'io.github.cdimascio:dotenv-java:3.0.0'
+
+    // Javalin (web framework)
+    implementation 'io.javalin:javalin:6.6.0'
+
+    // Javalin SSL plugin
+    implementation 'io.javalin.community.ssl:ssl-plugin:6.6.0'
+}
+
+def targetJavaVersion = 22
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release.set(targetJavaVersion)
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'fr.jessee.classicAPI.ClassicAPI'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    exclude 'META-INF/MANIFEST.MF',
+            'META-INF/LICENSE',
+            'META-INF/NOTICE.txt',
+            'META-INF/BC2048KE.DSA',
+            'META-INF/BC2048KE.SF',
+            'about.html',
+            'module-info.class',
+            'META-INF/NOTICE',
+            'META-INF/services/org.eclipse.jetty.webapp.Configuration',
+            'META-INF/versions/9/module-info.class'
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}
